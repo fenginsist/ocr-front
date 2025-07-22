@@ -1,31 +1,47 @@
 <template>
-  <div class="container">
-    <el-upload
-      class="upload-area"
-      drag
-      action=""
-      :auto-upload="false"
-      :on-change="handleFileChange"
-    >
-      <i class="el-icon-upload"></i>
-      <div class="el-upload__text">
-        拖拽文件到这里，或 <em>点击上传</em>
+  <div class="page-container">
+    <header class="ocr-header">
+      <div class="ocr-header-left">
+        <img src="../assets/images/infor-logo.png" alt="logo" />
+        <span class="ocr-assistant-title">识别小助手</span>
       </div>
-      <div class="el-upload__tip">支持 PDF、Word 等文档</div>
-    </el-upload>
+      <div class="ocr-header-right">
+        <div class="el-dropdown">
+          <div class="user-info">
+            <span class="avatar-user"><el-icon><UserFilled /></el-icon></span>
+            <span class="user-id">005878</span>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="ocr-container">
+      <el-upload
+        class="upload-area"
+        drag
+        action=""
+        :auto-upload="false"
+        :on-change="handleFileChange"
+      >
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">
+          拖拽文件到这里，或 <em>点击上传</em>
+        </div>
+        <div class="el-upload__tip">支持 PDF、Word 等文档</div>
+      </el-upload>
 
-    <el-button
-      class="submit-button"
-      type="primary"
-      :disabled="!selectedFile || loading"
-      @click="submitFile"
-    >
-      {{ loading ? '识别中...' : '点击识别' }}
-    </el-button>
+      <el-button
+        class="submit-button"
+        type="primary"
+        :disabled="!selectedFile || loading"
+        @click="submitFile"
+      >
+        {{ loading ? '识别中...' : '点击识别' }}
+      </el-button>
 
-    <div class="result-box">
-      <div class="result-text">
-        {{ resultText || '识别结果将显示在这里...' }}
+      <div class="result-box">
+        <div class="result-text">
+          {{ resultText || '识别结果将显示在这里...' }}
+        </div>
       </div>
     </div>
   </div>
@@ -72,9 +88,14 @@ const submitFile = async () => {
 </script>
 
 <style scoped>
-.container {
+
+.page-container{
+  height: 100%;
+}
+
+.ocr-container {
   max-width: 600px;
-  margin: 40px auto;
+  margin: 0px auto;
   padding: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   border-radius: 12px;
@@ -82,11 +103,60 @@ const submitFile = async () => {
   text-align: center;
 }
 
+.ocr-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid rgba(219, 224, 232, .7);
+  height: 48px !important;
+  background-color: #fff;
+  width: 100%;
+
+  padding: 0 20px;
+}
+
+.ocr-header-left {
+  display: flex;
+  align-items: center;
+}
+
+.ocr-header .ocr-assistant-title {
+  font-weight: 700;
+  font-size: 20px;
+  margin-left: 10px;
+  color: #606266;
+}
+
+.ocr-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.el-dropdown {
+  display: inline-block;
+  position: relative;
+  color: #606266;
+  font-size: 14px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.avatar-user, .user-id {
+  margin-left: 10px;
+}
+
 .upload-area {
   margin-bottom: 20px;
+  height: 100px;
 }
 
 .submit-button {
+  margin-top: 20px;
   margin-bottom: 20px;
   width: 100%;
   font-size: 16px;
