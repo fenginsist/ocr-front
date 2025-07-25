@@ -156,7 +156,7 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
   background-color: #fff;
   /* width: 100%;  */ /* 放开这个，会导致左右出现滚动条  */
 
-  padding: 0 20px;
+  /* padding: 0 20px; */
 }
 
 .ocr-header-left {
