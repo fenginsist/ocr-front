@@ -18,7 +18,9 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.0",
+    "@vue/compiler-sfc": "^3.5.18",
     "prettier": "3.5.3",
+    "typescript": "^5.8.3",
     "vite": "npm:rolldown-vite@latest",
     "vite-plugin-vue-devtools": "^7.7.7"
   }

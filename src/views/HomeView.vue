@@ -9,9 +9,26 @@
       <div class="ocr-header-right">
         <div class="el-dropdown">
           <div class="user-info">
-            <span class="avatar-user"
-              ><el-icon><UserFilled /></el-icon
-            ></span>
+            <!-- <span class="avatar-user">
+              <el-icon><UserFilled /></el-icon>
+            </span> -->
+            <el-dropdown>
+              <span class="el-dropdown-link">
+                <span class="avatar-user">
+                  <el-icon><UserFilled /></el-icon>
+                </span>
+                <el-icon class="el-icon--right">
+                  <arrow-down />
+                </el-icon>
+              </span>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item>注销</el-dropdown-item>
+                  <el-dropdown-item disabled>禁用demo</el-dropdown-item>
+                  <el-dropdown-item divided>分别demo</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
             <span class="user-id">005878</span>
           </div>
         </div>
@@ -22,12 +39,16 @@
     <div class="ocr-container">
       <!-- 左 -->
       <div class="ocr-sidebar">
-        <div>
-          <span>识别</span>
-        </div>
-        <div>
-          <div>识别记录</div>
-          <div>收藏</div>
+        <!-- <div class="ocr-text"><span>识别</span></div> -->
+        <div class="ocr-record-collect">
+          <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
+            <el-tab-pane label="识别记录" name="first">
+              <span>历史记录待实现</span>
+            </el-tab-pane>
+            <el-tab-pane label="收藏" name="second">
+              <span>收藏待实现</span>
+            </el-tab-pane>
+          </el-tabs>
         </div>
       </div>
       <!-- 右 -->
@@ -64,19 +85,27 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { UploadFilled } from '@element-plus/icons-vue'
+import type { UploadFile } from 'element-plus'
+import type { TabsPaneContext } from 'element-plus'
+import { ArrowDown } from '@element-plus/icons-vue'
 
 import { ref } from 'vue'
 import axios from 'axios'
 
-const selectedFile = ref(null)
+const selectedFile = ref<File | null>(null)
+const handleFileChange = (file: UploadFile) => {
+  if (file.raw) {
+    selectedFile.value = file.raw
+  }
+  // selectedFile.value = file.raw // 报错：确保 file.raw 不为 undefined，再赋值：
+  // 或者简写：
+  // selectedFile.value = file.raw ?? null
+}
+
 const resultText = ref('')
 const loading = ref(false)
-
-const handleFileChange = (file) => {
-  selectedFile.value = file.raw
-}
 
 const submitFile = async () => {
   if (!selectedFile.value) return
@@ -103,6 +132,12 @@ const submitFile = async () => {
   } finally {
     loading.value = false
   }
+}
+
+const activeName = ref('first')
+
+const handleClick = (tab: TabsPaneContext, event: Event) => {
+  console.log(tab, event)
 }
 </script>
 
@@ -159,6 +194,13 @@ const submitFile = async () => {
   margin-left: 10px;
 }
 
+.el-dropdown-link {
+  cursor: pointer;
+  color: var(--el-color-primary);
+  display: flex;
+  align-items: center;
+}
+
 .upload-area {
   display: flex;
   flex-direction: column;
@@ -178,6 +220,61 @@ const submitFile = async () => {
   height: 100%;
 }
 
+.ocr-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+}
+.ocr-record-collect {
+  display: flex;
+  margin-top: 10px;
+}
+
+.demo-tabs > .el-tabs__content {
+  padding: 32px;
+  color: #6b778c;
+  font-size: 32px;
+  font-weight: 600;
+}
+
+:deep(.el-tabs) {
+  width: 100%;
+}
+
+::v-deep(.el-tabs__nav) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+::v-deep(.el-tabs__item) {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+
+  box-sizing: border-box;
+
+  text-align: center;
+  height: 48px;
+  font-size: 16px;
+  padding: 0;
+}
+
+::v-deep(.el-tabs__active-bar) {
+  height: 3px;
+  background-color: #409eff;
+  width: 50% !important;
+  left: 0 !important;
+  transition: transform 0.3s ease;
+}
+
+::v-deep(.el-tabs__item:nth-child(2).is-active ~ .el-tabs__active-bar) {
+  transform: translateX(100%);
+}
+
 .ocr-main {
   display: flex;
   flex-direction: column; /** 上下排列 */
@@ -185,8 +282,9 @@ const submitFile = async () => {
   width: 100%;
   /* margin: 0px auto; */
   padding: 24px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
+  border-left: 1px solid #767373;
+  /* box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); */
+  /* border-radius: 12px; */
   background-color: #fff;
   text-align: center;
 }
