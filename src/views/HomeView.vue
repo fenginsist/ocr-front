@@ -62,6 +62,7 @@
           :limit="1"
           :on-change="handleFileChange"
           :on-exceed="handleExceed"
+          :on-remove="handleFileRemove"
         >
           <!-- <i class="el-icon-upload"></i> -->
           <el-icon class="el-icon--upload"><upload-filled /></el-icon>
@@ -107,12 +108,27 @@ import { uploadFileForOCR } from '@/api/ocr'
 
 const uploadRef = ref<UploadInstance>()
 const selectedFile = ref<File | null>(null)
+const fileList = ref<UploadFiles>([])
 
 const handleFileChange = (file: UploadFile, files: UploadFiles) => {
-  // 用于监听文件状态的所有变化，是最常用的事件处理器
-  if (file.raw) {
+  fileList.value = files
+  
+  if (files.length === 0) {
+    // 文件列表为空时，清空选中的文件
+    selectedFile.value = null
+  } else if (file.raw) {
+    // 有文件时，保存最新的文件
     selectedFile.value = file.raw
   }
+  
+  console.log('文件变化:', { fileName: file.name, fileCount: files.length })
+}
+
+const handleFileRemove = (file: UploadFile, files: UploadFiles) => {
+  fileList.value = files
+  selectedFile.value = null
+  console.log('文件已删除:', file.name)
+  ElMessage.success('文件已删除')
 }
 
 const handleExceed = (files: File[]) => {
@@ -120,11 +136,9 @@ const handleExceed = (files: File[]) => {
   ElMessage.warning('一次只能选择一个文件，请先移除当前文件再选择新文件')
 }
 
-const resultText = ref('')
-const loading = ref(false)
-
 const submitFile = () => {
-  if (!selectedFile.value) {
+  // 双重检查：检查 selectedFile 和 fileList
+  if (!selectedFile.value || fileList.value.length === 0) {
     ElMessage.warning('请先选择文件')
     return
   }
@@ -144,6 +158,9 @@ const submitFile = () => {
       loading.value = false
     })
 }
+
+const resultText = ref('')
+const loading = ref(false)
 
 const activeName = ref('first')
 
