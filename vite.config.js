@@ -21,7 +21,7 @@ export default defineConfig({
       '/zcocr': {
         target: 'http://192.168.3.55:8081',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/zcocr/, ''),
+        // rewrite: (path) => path.replace(/^\/zcocr/, ''),
       },
     },
   },

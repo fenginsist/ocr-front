@@ -10,6 +10,7 @@ lerna-debug.log*
 dist/
 *.zip
 
+ocr/
 node_modules
 .DS_Store
 dist

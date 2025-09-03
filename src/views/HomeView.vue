@@ -133,6 +133,7 @@ const submitFile = () => {
   resultText.value = ''
   uploadFileForOCR(selectedFile.value)
     .then((response) => {
+      console.log('OCR 识别结果:', response)
       resultText.value = response.data.data[0] || '识别完成，但未返回文本内容。'
     })
     .catch((error) => {
