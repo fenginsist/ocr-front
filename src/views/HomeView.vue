@@ -54,11 +54,14 @@
       <!-- 右 -->
       <div class="ocr-main">
         <el-upload
+          ref="uploadRef"
           class="upload-area"
           drag
           action=""
           :auto-upload="false"
+          :limit="1"
           :on-change="handleFileChange"
+          :on-exceed="handleExceed"
         >
           <!-- <i class="el-icon-upload"></i> -->
           <el-icon class="el-icon--upload"><upload-filled /></el-icon>
@@ -87,9 +90,10 @@
 
 <script setup lang="ts">
 import { UploadFilled } from '@element-plus/icons-vue'
-import type { UploadFile } from 'element-plus'
+import type { UploadFile, UploadFiles, UploadInstance } from 'element-plus'
 import type { TabsPaneContext } from 'element-plus'
 import { ArrowDown } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
 
 import { ref } from 'vue'
 import axios from 'axios'
@@ -101,21 +105,30 @@ import axios from 'axios'
  */
 import { uploadFileForOCR } from '@/api/ocr'
 
+const uploadRef = ref<UploadInstance>()
 const selectedFile = ref<File | null>(null)
-const handleFileChange = (file: UploadFile) => {
+
+const handleFileChange = (file: UploadFile, files: UploadFiles) => {
+  // 用于监听文件状态的所有变化，是最常用的事件处理器
   if (file.raw) {
     selectedFile.value = file.raw
   }
-  // selectedFile.value = file.raw // 报错：确保 file.raw 不为 undefined，再赋值：
-  // 或者简写：
-  // selectedFile.value = file.raw ?? null
+}
+
+const handleExceed = (files: File[]) => {
+  // 专门用于处理文件数量超限的情况，需要配合 limit 属性使用
+  ElMessage.warning('一次只能选择一个文件，请先移除当前文件再选择新文件')
 }
 
 const resultText = ref('')
 const loading = ref(false)
 
 const submitFile = () => {
-  if (!selectedFile.value) return
+  if (!selectedFile.value) {
+    ElMessage.warning('请先选择文件')
+    return
+  }
+
   loading.value = true
   resultText.value = ''
   uploadFileForOCR(selectedFile.value)
