@@ -112,7 +112,7 @@ const fileList = ref<UploadFiles>([])
 
 const handleFileChange = (file: UploadFile, files: UploadFiles) => {
   fileList.value = files
-  
+
   if (files.length === 0) {
     // 文件列表为空时，清空选中的文件
     selectedFile.value = null
@@ -120,7 +120,7 @@ const handleFileChange = (file: UploadFile, files: UploadFiles) => {
     // 有文件时，保存最新的文件
     selectedFile.value = file.raw
   }
-  
+
   console.log('文件变化:', { fileName: file.name, fileCount: files.length })
 }
 
@@ -135,6 +135,7 @@ const handleExceed = (files: File[]) => {
   // 专门用于处理文件数量超限的情况，需要配合 limit 属性使用
   ElMessage.warning('一次只能选择一个文件，请先移除当前文件再选择新文件')
 }
+// 测试git
 
 const submitFile = () => {
   // 双重检查：检查 selectedFile 和 fileList
