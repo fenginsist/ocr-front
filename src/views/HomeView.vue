@@ -218,7 +218,9 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
 }
 
 :deep(.el-upload-dragger) {
-  height: 240px;
+  height: 30vh; /* 使用视口高度的30% */
+  min-height: 200px; /* 设置最小高度，防止在小屏幕上过小 */
+  max-height: 300px; /* 设置最大高度，防止在大屏幕上过大 */
 }
 
 .ocr-container {
@@ -307,7 +309,9 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
 }
 
 .result-box {
-  height: 300px;
+  height: 40vh; /* 使用视口高度的40% */
+  min-height: 250px; /* 最小高度 */
+  max-height: 500px; /* 最大高度 */
   padding: 12px;
   border: 1px solid #dcdfe6;
   border-radius: 8px;
