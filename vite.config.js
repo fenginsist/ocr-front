@@ -13,12 +13,15 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  build: {
+    outDir: 'target/dist', // 设置输出目录为 target/dist
+  },
   server: {
     proxy: {
       '/zcocr': {
         target: 'http://192.168.3.55:8081',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
+        rewrite: (path) => path.replace(/^\/zcocr/, ''),
       },
     },
   },
