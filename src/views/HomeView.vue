@@ -63,7 +63,7 @@
           <!-- <i class="el-icon-upload"></i> -->
           <el-icon class="el-icon--upload"><upload-filled /></el-icon>
           <div class="el-upload__text">拖拽文件到这里，或 <em>点击上传</em></div>
-          <div class="el-upload__tip">支持 PDF、Word 等文档</div>
+          <div class="el-upload__tip">支持 PDF、docx、md、txt 格式的文档</div>
         </el-upload>
 
         <el-button
@@ -94,6 +94,13 @@ import { ArrowDown } from '@element-plus/icons-vue'
 import { ref } from 'vue'
 import axios from 'axios'
 
+/**
+ * 你的项目使用了 TypeScript（HomeView.vue 中有 TypeScript 语法），但是 tsconfig.json 中缺少路径映射配置。虽然 Vite 配置中有 @ 别名，但 TypeScript 编译器需要单独的路径配置才能正确识别模块路径。
+ * 解决方法：在 tsconfig.json 中添加路径映射配置。
+ * 将ocr/index.js改为ts
+ */
+import { uploadFileForOCR } from '@/api/ocr'
+
 const selectedFile = ref<File | null>(null)
 const handleFileChange = (file: UploadFile) => {
   if (file.raw) {
@@ -107,31 +114,21 @@ const handleFileChange = (file: UploadFile) => {
 const resultText = ref('')
 const loading = ref(false)
 
-const submitFile = async () => {
+const submitFile = () => {
   if (!selectedFile.value) return
-
   loading.value = true
   resultText.value = ''
-
-  const formData = new FormData()
-  formData.append('file', selectedFile.value)
-
-  try {
-    const response = await axios.post('/zcocr/get/file/content', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+  uploadFileForOCR(selectedFile.value)
+    .then((response) => {
+      resultText.value = response.data.data[0] || '识别完成，但未返回文本内容。'
     })
-    // console.log('11111',response)
-    // console.log('22222',response.data)
-    // console.log('33333',response.data.data)
-    resultText.value = response.data.data[0] || '识别完成，但未返回文本内容。'
-  } catch (error) {
-    resultText.value = '识别失败，请稍后重试。'
-    console.error(error)
-  } finally {
-    loading.value = false
-  }
+    .catch((error) => {
+      resultText.value = '识别失败，请稍后重试。'
+      console.error(error)
+    })
+    .finally(() => {
+      loading.value = false
+    })
 }
 
 const activeName = ref('first')
@@ -208,7 +205,7 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
 }
 
 :deep(.el-upload-dragger) {
-  height: 300px;
+  height: 240px;
 }
 
 .ocr-container {
@@ -297,7 +294,7 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
 }
 
 .result-box {
-  height: 400px;
+  height: 300px;
   padding: 12px;
   border: 1px solid #dcdfe6;
   border-radius: 8px;
